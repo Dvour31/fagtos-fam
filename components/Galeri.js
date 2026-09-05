@@ -121,8 +121,14 @@ function VideoCard({ video }) {
     { className: "video-card" },
     h(
       "video",
-      { ref: videoElRef, controls: true, preload: "auto" },
-      h("source", { src: video.src, type: "Video/mp4" }),
+      {
+        ref: videoElRef,
+        src: video.src,
+        controls: true,
+        preload: "auto",
+        playsInline: true,
+      },
+      h("source", { src: video.src, type: "video/mp4" }),
       "Browser kamu tidak mendukung pemutaran video."
     ),
     h("figcaption", null, video.caption)

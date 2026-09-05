@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fagtos Fam</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Caveat:wght@600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="root"></div>
+
+<!-- Library inti -->
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<!-- Alias singkat React.createElement, dipakai semua file komponen -->
+<script>window.h = React.createElement;</script>
+
+<!-- Data (edit file ini buat ganti konten) -->
+<script src="data.js"></script>
+
+<!-- Komponen (urutan penting: dependency dulu baru App).
+     Ditulis pakai React.createElement biasa (bukan JSX), jadi
+     TIDAK butuh Babel dan bisa dibuka langsung lewat file://
+     tanpa server lokal. -->
+<script src="components/Doodles.js"></script>
+<script src="components/Lightbox.js"></script>
+<script src="components/Header.js"></script>
+<script src="components/Hero.js"></script>
+<script src="components/Tentang.js"></script>
+<script src="components/Roster.js"></script>
+<script src="components/Galeri.js"></script>
+<script src="components/Backsound.js"></script>
+<script src="components/Kontak.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

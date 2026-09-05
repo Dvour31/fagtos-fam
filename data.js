@@ -46,6 +46,9 @@ window.SITE_DATA = {
     { src: "assets/photos/14.jpeg", caption: "When Yah" },
     { src: "assets/photos/15.jpeg", caption: "HIDUP JOKOWI" },
     { src: "assets/photos/16.jpeg", caption: "El Racist Pergi" },
+    { src: "assets/photos/18.jpeg", caption: "Sheesh" },
+    { src: "assets/photos/21.jpeg", caption: "BA Sprite" },
+    { src: "assets/photos/20.jpeg", caption: "TTD Kontrak" },
 
   ],
 
@@ -58,7 +61,12 @@ window.SITE_DATA = {
     { src: "assets/videos/FOTO BLUR.mp4", poster: "assets/photos/thumbnail/FOTO BLUR.png", caption: "Ea" },
     { src: "assets/videos/TTM.mp4", poster: "assets/photos/thumbnail/TTM.png", caption: "dem bruh" },
     { src: "assets/videos/tempe.mp4", poster: "assets/photos/thumbnail/tempe.png", caption: "eh awas jatoh" },
-
+    { src: "assets/videos/salur.mp4", poster: "assets/photos/thumbnail/salur.png", caption: "We P beta bicara jelas cok" },
+    { src: "assets/videos/ceilah.mp4", poster: "assets/photos/thumbnail/ceilah.png", caption: "Ceilah" },
+    { src: "assets/videos/sirg.mp4", poster: "assets/photos/thumbnail/sirg.png", caption: "Bejir" },
+    { src: "assets/videos/okper.mp4", poster: "assets/photos/thumbnail/okper.png", caption: "Okang Pergi" },
+    { src: "assets/videos/mskmi.mp4", poster: "assets/photos/thumbnail/mskmi.png", caption: "Masak Mi Rusuh Bet" },
+    { src: "assets/videos/bas.mp4", poster: "assets/photos/thumbnail/bas.png", caption: "BA Sprite" },
   ],
 
   // ---- BACKSOUND / PLAYLIST -----------------------------------------
@@ -67,10 +75,12 @@ window.SITE_DATA = {
   // "src" ke file mp3 asli di assets/audio/
   playlist: [
     { title: "Shape of My Heart", artist: "Fagtos Fam", src: "assets/audio/shape.mp3" },
+    { title: "Duake Aku Lilo", artist: "Fagtos Fam", src: "assets/audio/duaek.mp3" },
     { title: "Astaga Bersyanda", artist: "Fagtos Fam", src: "assets/audio/astaga.mp3" },
     { title: "Menungso Ratoto", artist: "Fagtos Fam", src: "assets/audio/menungso.mp3" },
     { title: "Playdate", artist: "Fagtos Fam", src: "assets/audio/playdate.mp3" },
     { title: "Dia Masa Lalumu, Aku Masa Depanmu", artist: "Fagtos Fam", src: "assets/audio/dia.mp3" },
+    { title: "Beautiful", artist: "Fagtos Fam", src: "assets/audio/bazizi.mp3" },
   ],
 
   // ---- BRAND -----------------------------------------------------

@@ -160,7 +160,7 @@ function App() {
     h(
       "footer",
       { className: "scrawl" },
-      "Pergi ke pasar membeli ketan, Ketan dimakan di tepi kali, Meski waktu terus berjalan, Semua kenangan selalu di hati — FF(Forever n eFer)"
+      "Pergi ke pasar membeli ketan, Ketan dimakan di tepi kali, Meski waktu terus berjalan, Semua kenangan selalu di hati — FF(Forever n eFerlasting)"
     ),
     h(MiniPlayer, {
       tracks,

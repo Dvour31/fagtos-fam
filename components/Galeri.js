@@ -125,7 +125,7 @@ function VideoCard({ video }) {
         ref: videoElRef,
         src: video.src,
         controls: true,
-        preload: "auto",
+        preload: "metadata",
         playsInline: true,
       },
       h("source", { src: video.src, type: "video/mp4" }),

@@ -66,11 +66,11 @@ window.SITE_DATA = {
   // player akan otomatis menyesuaikan tanpa ubah kode lain.
   // "src" ke file mp3 asli di assets/audio/
   playlist: [
+    { title: "Shape of My Heart", artist: "Fagtos Fam", src: "assets/audio/shape.mp3" },
     { title: "Dia Masa Lalumu, Aku Masa Depanmu", artist: "Fagtos Fam", src: "assets/audio/dia.mp3" },
     { title: "Astaga Bersyanda", artist: "Fagtos Fam", src: "assets/audio/astaga.mp3" },
     { title: "Menungso Ratoto", artist: "Fagtos Fam", src: "assets/audio/menungso.mp3" },
     { title: "Playdate", artist: "Fagtos Fam", src: "assets/audio/playdate.mp3" },
-    { title: "Shape of My Heart", artist: "Fagtos Fam", src: "assets/audio/shape.mp3" },
   ],
 
   // ---- BRAND -----------------------------------------------------

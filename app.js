@@ -1,60 +1,62 @@
 function App() {
-  const { useEffect, useRef, useState, useCallback } = React;
+  const { useEffect, useRef, useState } = React;
   const tracks = window.SITE_DATA.playlist;
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
-  const autoplayTriedRef = useRef(false);
+  const currentIndexRef = useRef(0);
+  const isChangingTrackRef = useRef(false);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
   }, []);
 
-  // Auto-play musik saat halaman dimuat
+  // Sinkronkan ref agar tidak stale di closure event listener
   useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio || !tracks[0] || autoplayTriedRef.current) return;
-    autoplayTriedRef.current = true;
-
-    audio.src = tracks[0].src;
-    audio.volume = 0.7;
-    var playAttempt = audio.play();
-    if (playAttempt !== undefined) {
-      playAttempt.then(function () {
-        setIsPlaying(true);
-      }).catch(function () {
-        // Browser blokir autoplay — tunggu user interaksi pertama
-        setIsPlaying(false);
-        function unlockAudio() {
-          audio.play().then(function () {
-            setIsPlaying(true);
-          }).catch(function () { });
-          document.removeEventListener("click", unlockAudio);
-          document.removeEventListener("touchstart", unlockAudio);
-          document.removeEventListener("scroll", unlockAudio);
-        }
-        document.addEventListener("click", unlockAudio, { once: false });
-        document.addEventListener("touchstart", unlockAudio, { once: false });
-        document.addEventListener("scroll", unlockAudio, { once: false });
-      });
-    }
-  }, []);
-
-  // ganti sumber audio tiap kali lagu berpindah
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio || !tracks[currentIndex]) return;
-    // Skip kalau ini mount pertama (sudah dihandle oleh autoplay di atas)
-    if (currentIndex === 0 && !isPlaying && autoplayTriedRef.current) return;
-    audio.src = tracks[currentIndex].src;
-    if (isPlaying) {
-      audio.play().catch(() => {
-        setIsPlaying(false);
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    currentIndexRef.current = currentIndex;
   }, [currentIndex]);
+
+  // Fungsi ganti lagu dan putar
+  const playTrack = (index, shouldPlay = true) => {
+    const audio = audioRef.current;
+    if (!audio || !tracks[index]) return;
+
+    isChangingTrackRef.current = true;
+    setCurrentIndex(index);
+    currentIndexRef.current = index;
+
+    audio.src = tracks[index].src;
+    audio.currentTime = 0;
+
+    if (shouldPlay) {
+      audio
+        .play()
+        .then(() => {
+          setIsPlaying(true);
+        })
+        .catch(() => {
+          setIsPlaying(false);
+        })
+        .finally(() => {
+          isChangingTrackRef.current = false;
+        });
+    } else {
+      audio.pause();
+      setIsPlaying(false);
+      isChangingTrackRef.current = false;
+    }
+  };
+
+  const nextTrack = () => {
+    const nextIdx = (currentIndexRef.current + 1) % tracks.length;
+    playTrack(nextIdx, true);
+  };
+
+  const prevTrack = () => {
+    const prevIdx = (currentIndexRef.current - 1 + tracks.length) % tracks.length;
+    playTrack(prevIdx, true);
+  };
 
   const togglePlay = () => {
     const audio = audioRef.current;
@@ -63,17 +65,81 @@ function App() {
       audio.pause();
       setIsPlaying(false);
     } else {
-      audio.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+      if (!audio.src || !audio.src.includes(".mp3")) {
+        audio.src = tracks[currentIndexRef.current].src;
+      }
+      audio
+        .play()
+        .then(() => {
+          setIsPlaying(true);
+        })
+        .catch(() => {
+          setIsPlaying(false);
+        });
     }
   };
 
   const selectTrack = (i) => {
-    setCurrentIndex(i);
-    setIsPlaying(true);
+    playTrack(i, true);
   };
 
-  const nextTrack = () => setCurrentIndex((i) => (i + 1) % tracks.length);
-  const prevTrack = () => setCurrentIndex((i) => (i - 1 + tracks.length) % tracks.length);
+  // Autoplay saat pertama kali dibuka & unlock untuk mobile/desktop
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio || !tracks[0]) return;
+
+    audio.volume = 0.7;
+    audio.src = tracks[0].src;
+
+    let unlocked = false;
+
+    // 1. Coba autoplay langsung (berhasil di desktop yang mengizinkan)
+    const playAttempt = audio.play();
+    if (playAttempt !== undefined) {
+      playAttempt
+        .then(() => {
+          setIsPlaying(true);
+          unlocked = true;
+        })
+        .catch(() => {
+          // Browser memblokir autoplay otomatis tanpa interaksi
+          setIsPlaying(false);
+        });
+    }
+
+    // 2. Sentuhan/klik pertama pengguna untuk unlock audio di mobile & desktop
+    const unlockAudio = () => {
+      if (unlocked) return;
+      const a = audioRef.current;
+      if (!a) return;
+
+      a.play()
+        .then(() => {
+          setIsPlaying(true);
+          unlocked = true;
+          cleanupListeners();
+        })
+        .catch(() => {
+          // Jangan remove jika gagal, tunggu interaksi berikutnya
+        });
+    };
+
+    // Dengarkan event gesture pengguna yang valid (tanpa 'scroll', karena browser menolak audio dari scroll)
+    const events = ["click", "touchstart", "touchend", "pointerdown", "keydown"];
+    const cleanupListeners = () => {
+      events.forEach((evt) => {
+        document.removeEventListener(evt, unlockAudio, true);
+      });
+    };
+
+    events.forEach((evt) => {
+      document.addEventListener(evt, unlockAudio, { capture: true, passive: true });
+    });
+
+    return () => {
+      cleanupListeners();
+    };
+  }, []);
 
   return h(
     React.Fragment,
@@ -91,7 +157,11 @@ function App() {
       onTogglePlay: togglePlay,
     }),
     h(Kontak, null),
-    h("footer", { className: "scrawl" }, "Pergi ke pasar membeli ketan, Ketan dimakan di tepi kali, Meski waktu terus berjalan, Semua kenangan selalu di hati — FF(Forever n eFer)"),
+    h(
+      "footer",
+      { className: "scrawl" },
+      "Pergi ke pasar membeli ketan, Ketan dimakan di tepi kali, Meski waktu terus berjalan, Semua kenangan selalu di hati — FF(Forever n eFer)"
+    ),
     h(MiniPlayer, {
       tracks,
       currentIndex,
@@ -102,9 +172,17 @@ function App() {
     }),
     h("audio", {
       ref: audioRef,
+      preload: "auto",
       onEnded: nextTrack,
-      onPause: () => setIsPlaying(false),
-      onPlay: () => setIsPlaying(true),
+      onPause: () => {
+        // Abaikan pause jika sedang proses ganti lagu atau lagu baru saja tamat
+        if (isChangingTrackRef.current) return;
+        if (audioRef.current && audioRef.current.ended) return;
+        setIsPlaying(false);
+      },
+      onPlay: () => {
+        setIsPlaying(true);
+      },
     }),
     h(Lightbox, null)
   );
